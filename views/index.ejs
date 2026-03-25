@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OfficeSpace - System Rezerwacji</title>
+    <style>
+        body { font-family: sans-serif; line-height: 1.6; margin: 20px; color: #333; }
+        h1 { color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        h2 { color: #2980b9; margin-top: 30px; }
+        .grid { display: flex; gap: 20px; flex-wrap: wrap; }
+        .card { 
+            border: 1px solid #ddd; 
+            padding: 15px; 
+            border-radius: 8px; 
+            width: 250px; 
+            background: #f9f9f9;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+        }
+        .card:hover { border-color: #2980b9; }
+        .btn { 
+            display: inline-block; 
+            margin-top: 10px; 
+            padding: 8px 12px; 
+            background: #2980b9; 
+            color: white; 
+            text-decoration: none; 
+            border-radius: 4px; 
+            font-size: 0.9em;
+        }
+        .btn:hover { background: #3498db; }
+        .info { font-size: 0.85em; color: #666; }
+    </style>
+</head>
+<body>
+
+    <h1>🏢 System Rezerwacji OfficeSpace</h1>
+
+    <section>
+        <h2>Konferencyjne Sale Spotkań</h2>
+        <div class="grid">
+            <% if (rooms.length === 0) { %>
+                <p>Brak zdefiniowanych sal.</p>
+            <% } %>
+            <% rooms.forEach(room => { %>
+                <div class="card">
+                    <strong><%= room.name %></strong>
+                    <div class="info">
+                        Piętro: <%= room.floor %><br>
+                        Miejsca: <%= room.capacity %><br>
+                        Rzutnik: <%= room.hasProjector ? '✅ Tak' : '❌ Nie' %>
+                    </div>
+                    <a href="/details.html?type=room&id=<%= room.id %>" class="btn">Sprawdź grafik</a>
+                </div>
+            <% }) %>
+        </div>
+    </section>
+
+    <section>
+        <h2>Stanowiska Pracy (Biurka)</h2>
+        <div class="grid">
+            <% if (desks.length === 0) { %>
+                <p>Brak zdefiniowanych biurek.</p>
+            <% } %>
+            <% desks.forEach(desk => { %>
+                <div class="card">
+                    <strong>Biurko: <%= desk.identifier %></strong>
+                    <div class="info">
+                        Sprzęt: <%= desk.equipment || 'Podstawowy' %><br>
+                        Regulacja wysokości: <%= desk.isStandingDesk ? '✅ Tak' : '❌ Nie' %>
+                    </div>
+                    <a href="/details.html?type=desk&id=<%= desk.id %>" class="btn">Zarezerwuj</a>
+                </div>
+            <% }) %>
+        </div>
+    </section>
+
+</body>
+</html>
