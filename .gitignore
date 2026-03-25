@@ -1,0 +1,16 @@
+# Zależności (paczki zainstalowane przez npm)
+node_modules/
+
+# Baza danych SQLite (nie chcemy wysyłać Twoich lokalnych testów)
+*.sqlite
+*.sqlite3
+
+# Logi błędów
+npm-debug.log*
+
+# Pliki środowiskowe (jeśli będziesz ich używać)
+.env
+
+# Pliki systemowe
+.DS_Store
+Thumbs.db
