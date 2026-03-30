@@ -1,5 +1,4 @@
-const { Sequelize, DataTypes } = require('sequelize');
-
+const { Sequelize, DataTypes, Op } = require('sequelize'); 
 // Konfiguracja połączenia
 const sequelize = new Sequelize({
   dialect: 'sqlite',
@@ -33,4 +32,4 @@ const Reservation = sequelize.define('Reservation', {
 });
 
 // Eksportujemy modele i obiekt połączenia
-module.exports = { sequelize, ConferenceRoom, Desk, Reservation };
+module.exports = { sequelize, ConferenceRoom, Desk, Reservation, Op }; 

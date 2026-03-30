@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Szczegóły - OfficeSpace</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+</head>
+<body class="bg-light">
+
+<div class="container py-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Strona Główna</a></li>
+            <li class="breadcrumb-item active"><%= type === 'room' ? 'Sala' : 'Biurko' %></li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-lg-5">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="h5 mb-0"><i class="bi bi-info-circle"></i> Informacje o zasobie</h3>
+                </div>
+                <div class="card-body">
+                    <h2><%= type === 'room' ? resource.name : 'Stanowisko ' + resource.identifier %></h2>
+                    <ul class="list-group list-group-flush mb-4">
+                        <% if (type === 'room') { %>
+                            <li class="list-group-item d-flex justify-content-between">Piętro: <span><%= resource.floor %></span></li>
+                            <li class="list-group-item d-flex justify-content-between">Miejsca: <span><%= resource.capacity %></span></li>
+                            <li class="list-group-item d-flex justify-content-between">Rzutnik: <span><%= resource.hasProjector ? 'Tak' : 'Nie' %></span></li>
+                        <% } else { %>
+                            <li class="list-group-item"><strong>Sprzęt:</strong><br><%= resource.equipment %></li>
+                            <li class="list-group-item d-flex justify-content-between">Regulacja wys.: <span><%= resource.isStandingDesk ? 'Tak' : 'Nie' %></span></li>
+                        <% } %>
+                    </ul>
+
+                    <h4 class="h6 text-uppercase text-muted mb-3">Zarezerwuj teraz</h4>
+                    <form action="/book.html?type=<%= type %>&id=<%= resource.id %>" method="POST">
+                        <div class="mb-3">
+                            <label class="form-label small">Twoje Imię i Nazwisko</label>
+                            <input type="text" name="employeeName" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="date">Data:</label>
+                            <input type="date" id="date" name="date" class="form-control" required 
+                                min="<%= new Date().toISOString().split('T')[0] %>">
+                        </div>
+                        <div class="row g-2">
+                            <div class="col">
+                                <label class="form-label small">Od</label>
+                                <input type="time" name="startTime" class="form-control" required>
+                            </div>
+                            <div class="col">
+                                <label class="form-label small">Do</label>
+                                <input type="time" name="endTime" class="form-control" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100 mt-4">Dodaj rezerwację</button>
+                    </form>
+
+                    <% if (typeof error !== 'undefined') { %>
+                        <div class="alert alert-danger mt-3 py-2"><i class="bi bi-exclamation-triangle"></i> <%= error %></div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-7">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h3 class="h5 mb-0 text-secondary"><i class="bi bi-clock-history"></i> Harmonogram</h3>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Data</th>
+                                <th>Czas</th>
+                                <th>Pracownik</th>
+                                <th>Akcja</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (reservations.length === 0) { %>
+                                <tr><td colspan="4" class="text-center text-muted py-4">Brak rezerwacji</td></tr>
+                            <% } %>
+                            <% reservations.forEach(res => { %>
+                            <tr>
+                                <td><%= res.date %></td>
+                                <td><span class="badge bg-light text-dark border"><%= res.startTime %> - <%= res.endTime %></span></td>
+                                <td><%= res.employeeName %></td>
+                                <td>
+                                    <form action="/cancel-reservation.html" method="POST" onsubmit="return confirm('Odwołać?');">
+                                        <input type="hidden" name="reservationId" value="<%= res.id %>">
+                                        <input type="hidden" name="type" value="<%= type %>">
+                                        <input type="hidden" name="resourceId" value="<%= resource.id %>">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                    </form>
+                                </td>
+                            </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
